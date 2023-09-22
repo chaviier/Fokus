@@ -7,11 +7,26 @@ const titulo = document.querySelector('.app__title')
 const botoes = document.querySelectorAll('.app__card-button')
 const musicaFocoInput = document.querySelector('#alternar-musica')
 const musica = new Audio('/sons/luna-rise-part-one.mp3')
-const startPauseBt = document.querySelector('#start-pause')
+const iniciarOuPausarBt = document.querySelector('#start-pause span')
+const tempoNaTela = document.querySelector('#timer')
 
+// PARTE DO DESAFIO - INSERINDO AUDIO NO PROJETO
+
+const startPauseBt = document.querySelector('#start-pause')
+const musicaPlay = new Audio('/sons/play.wav')
+const musicaPause = new Audio('/sons/pause.mp3')
+const musicaBeep = new Audio ('/sons/beep.mp3')
+const imgpause = document.querySelector('#start-pause img')
+
+
+
+
+
+let intervaloId = null;
 let tempoDecorridoEmSegundos = 5;
 
-musica.loop = true
+musica.loop = true; 
+
 
 musicaFocoInput.addEventListener('change', () => {
     if(musica.paused) {
@@ -63,10 +78,44 @@ function alterarContexto(contexto) {
 }
 
 
+// btn pause  
 
 const contagemRegressiva = () => {
+    if (tempoDecorridoEmSegundos <= 0) {
+        // musicaBeep.play()
+        alert('Tempo finalizado!')
+        zerar()
+        return
+    }
     tempoDecorridoEmSegundos -= 1
     console.log('Temportizador: ' + tempoDecorridoEmSegundos)    
+}
+
+startPauseBt.addEventListener('click', iniciarOuPausar)
+
+
+
+
+
+
+function iniciarOuPausar() {
+    if(intervaloId) {
+        zerar()
+        musicaPause.play()
+        return     
+    }
+    
+    musicaPlay.play()
+    intervaloId = setInterval(contagemRegressiva, 1000)
+    iniciarOuPausarBt.textContent = "Pausar"
+    imgpause.setAttribute('src', '/imagens/pause.png')
+}
+
+function zerar() {
+    clearInterval(intervaloId)
+    iniciarOuPausarBt.textContent = "Começar"
+    intervaloId = null;
+    imgpause.setAttribute('src', '/imagens/play_arrow.png')
 }
 
 
